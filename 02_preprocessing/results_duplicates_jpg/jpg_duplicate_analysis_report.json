@@ -1,0 +1,38 @@
+{
+  "report_type": "recovered_after_duplicate_removal",
+  "generated_at": "2026-08-09T01:25:01.931280",
+  "paths": {
+    "original_images": "/home/users/ymathansingh/Master_Thesis/01_download_images/jpg/downloaded_images_jpg",
+    "removed_duplicates": "/scratch/users/ymathansingh/duplicate_images/results_duplicates_jpg/removed_duplicates",
+    "json_report": "/home/users/ymathansingh/Master_Thesis/02_preprocessing/duplicate_images/results_duplicates_jpg"
+  },
+  "initial_image_counts_reconstructed": {
+    "train": 289186,
+    "val": 32137,
+    "test_id": 2633,
+    "test_ood": 22385,
+    "total": 346341
+  },
+  "final_image_counts_in_original_location": {
+    "train": 289185,
+    "val": 32137,
+    "test_id": 324,
+    "test_ood": 25,
+    "total": 321671
+  },
+  "removed_duplicate_counts": {
+    "train": 1,
+    "val": 0,
+    "test_id": 2309,
+    "test_ood": 22360,
+    "total": 24670
+  },
+  "duplicate_removal_summary": {
+    "images_removed_total": 24670,
+    "images_remaining_total": 321671,
+    "images_before_removal_total": 346341,
+    "verification": {
+      "before_equals_remaining_plus_removed": true
+    }
+  }
+}
