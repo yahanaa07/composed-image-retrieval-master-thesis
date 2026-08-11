@@ -1,6 +1,0 @@
-transformers
-tqdm
-pandas
-accelerate
-bitsandbytes
-sentencepiece
