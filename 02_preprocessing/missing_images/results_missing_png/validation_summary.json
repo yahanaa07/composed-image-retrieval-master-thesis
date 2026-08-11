@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-08-08T23:17:14.410156",
+  "csv": {
+    "input": "/home/users/ymathansingh/Master_Thesis/03_CIR-dataset/original/cir_db.csv",
+    "output": "/home/users/ymathansingh/Master_Thesis/02_preprocessing/missing_images/results_missing_png/cir_db_updated.csv",
+    "original_rows": 2647,
+    "updated_rows": 1664,
+    "rows_removed": 983
+  },
+  "images": {
+    "root": "/home/users/ymathansingh/Master_Thesis/01_download_images/png/downloaded_images_png",
+    "splits": [
+      "train",
+      "val",
+      "test_id",
+      "test_ood"
+    ],
+    "physical_files_before": {
+      "train": 253978,
+      "val": 32137,
+      "test_id": 557,
+      "test_ood": 2493
+    },
+    "physical_files_after": {
+      "train": 253942,
+      "val": 32137,
+      "test_id": 557,
+      "test_ood": 2493
+    },
+    "unique_ids_indexed": 289161,
+    "valid_images": 289125,
+    "corrupt_images": 36
+  },
+  "corrupt_images": {
+    "total": 36,
+    "referenced_by_cir_csv": 0,
+    "moved": 36,
+    "move_errors": 0,
+    "destination": "/scratch/users/ymathansingh/missing_images/corrupt_images_png"
+  },
+  "csv_id_inventory": {
+    "unique_id1": 834,
+    "unique_id2": 1144,
+    "unique_combined": 1435
+  },
+  "row_removal_reasons": {
+    "id1_missing": 630,
+    "id1_corrupt": 0,
+    "id2_empty": 0,
+    "id2_no_valid_target": 353
+  },
+  "partition_counts": {
+    "test_id": 1576,
+    "test_ood": 88
+  }
+}

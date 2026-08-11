@@ -1,0 +1,141 @@
+import os
+import pandas as pd
+import json
+
+# ============================
+# PATHS
+# ============================
+
+CSV_PATH = "/home/users/ymathansingh/Master_Thesis/03_CIR-dataset/original/cir_db.csv"
+
+IMAGES_ROOT = "/home/users/ymathansingh/Master_Thesis/01_download_images/png/downloaded_images_png"
+
+OUTPUT_DIR = "/home/users/ymathansingh/Master_Thesis/02_preprocessing/missing_images/results_missing_png"
+
+OUTPUT_CSV = os.path.join(OUTPUT_DIR, "cir_db_updated.csv")
+
+SPLITS = ["train", "val", "test_id", "test_ood"]
+
+
+# ============================
+# CREATE OUTPUT DIRECTORY
+# ============================
+
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+
+# ============================
+# LOAD ALL EXISTING IMAGE IDS
+# ============================
+
+existing_ids = set()
+
+for split in SPLITS:
+    folder = os.path.join(IMAGES_ROOT, split)
+
+    if not os.path.isdir(folder):
+        print(f"Warning: missing folder {folder}")
+        continue
+
+    for filename in os.listdir(folder):
+        if filename.lower().endswith(".png"):
+            image_id = os.path.splitext(filename)[0]
+            existing_ids.add(image_id)
+
+print(f"Total existing image IDs: {len(existing_ids)}")
+
+
+# ============================
+# LOAD CSV
+# ============================
+
+df = pd.read_csv(CSV_PATH)
+
+print(f"Original rows: {len(df)}")
+
+
+# ============================
+# HELPER FOR id2
+# ============================
+
+def parse_id2(value):
+    if pd.isna(value):
+        return []
+
+    text = str(value).strip()
+
+    if text == "":
+        return []
+
+    # Support common separators: comma, semicolon, pipe, whitespace
+    text = text.replace(";", ",").replace("|", ",")
+    parts = [p.strip() for p in text.split(",") if p.strip()]
+
+    # If no comma-style separator was found, fall back to whitespace split
+    if len(parts) == 1 and " " in text:
+        parts = [p.strip() for p in text.split() if p.strip()]
+
+    return parts
+
+
+# ============================
+# FILTER ROWS
+# ============================
+
+keep_rows = []
+
+for _, row in df.iterrows():
+
+    # ----- Check id1 -----
+    id1 = str(row["id1"]).strip()
+
+    if id1 not in existing_ids:
+        continue
+
+    # ----- Check id2 -----
+    id2_list = parse_id2(row["id2"])
+
+    # If id2 is empty -> remove row
+    if len(id2_list) == 0:
+        continue
+
+    # Keep row if at least one id2 exists
+    id2_exists = any(img_id in existing_ids for img_id in id2_list)
+
+    if not id2_exists:
+        continue
+
+    keep_rows.append(row)
+
+
+# ============================
+# SAVE UPDATED CSV
+# ============================
+
+updated_df = pd.DataFrame(keep_rows)
+
+updated_df.to_csv(OUTPUT_CSV, index=False)
+
+print(f"Rows kept: {len(updated_df)}")
+print(f"Rows removed: {len(df) - len(updated_df)}")
+print(f"Saved: {OUTPUT_CSV}")
+
+# ============================
+# COUNT PARTITIONS
+# ============================
+
+partition_counts = updated_df["partition"].value_counts().to_dict()
+
+partition_json = os.path.join(
+    OUTPUT_DIR,
+    "partition_count.json"
+)
+
+with open(partition_json, "w", encoding="utf-8") as f:
+    json.dump(partition_counts, f, indent=2)
+
+print("\nPartition counts:")
+for partition, count in partition_counts.items():
+    print(f"{partition}: {count}")
+
+print(f"Partition count saved: {partition_json}")
